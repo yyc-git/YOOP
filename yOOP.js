@@ -246,7 +246,7 @@
                         throw new Error("Attribute must be array!");
                     }
                     else {
-                        for (i = 0, len = that.method.length; i < len; i++) {
+                        for (i = 0, len = that.attribute.length; i < len; i++) {
                             //加上前缀“Interface_”
                             I.prototype["Interface_" + that.attribute[i]] = 0;
                         }

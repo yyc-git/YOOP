@@ -548,56 +548,73 @@
             expect(F.prototype.Interface_m1).toBeExist();
             expect(F.prototype.Interface_m2).toBeExist();
         });
-        /*
-         验证实现接口成员的工作放到Class中（AClass不用实现）
+        it("测试接口问题", function(){
+            var Animal = YYC.Interface(["eat","run"],["name"]);
+            var People = YYC.Class({Interface:Animal},{
+                Private:{
+                },
+                Public:{
+                    name:"yh",
+                    eat:function(){
+                        console.log("eating");
+                    },
+                    run:function(){
+                        console.log(this.name)
+                    }
+                }
+            });
 
+            expect(function(){
+                var people = new People();
+                people.eat();
+                people.run();
+            }).not.toThrow();
+        });
+        it("子类Class没有全部实现了接口方法和属性，抛出异常", function () {
+            var Int = YYC.Interface("A", "B");
 
-         it("子类Class没有全部实现了接口方法和属性，抛出异常", function () {
-         var Int = YYC.Interface("A", "B");
+            expect(function () {
+                YYC.Class({Interface: Int}, {
+                    Public: {
+                        //A: function () { },
+                        B: function () { }
+                    }
+                });
+            }).toThrow();
 
-         expect(function () {
-         YYC.Class({Interface: Int}, {
-         Public: {
-         //A: function () { },
-         B: function () { }
-         }
-         });
-         }).toThrow();
+            var Int2 = YYC.Interface(Int, ["C"], ["a"]);
 
-         var Int2 = YYC.Interface(Int, ["C"], ["a"]);
+            expect(function () {
+                YYC.Class({Interface: Int2}, {
+                    Public: {
+                        A: function () { },
+                        B: function () { },
+                        C: function () { }
+                    }
+                });
+            }).toThrow();
+            expect(function () {
+                YYC.Class({Interface: Int2}, {
+                    Public: {
+                        B: function () { },
+                        C: function () { },
+                        a: 1
+                    }
+                });
+            }).toThrow();
+        });
+        it("子类全部实现了接口方法和属性，不抛出异常", function () {
+            var Int = YYC.Interface("A", "B");
 
-         expect(function () {
-         YYC.Class({Interface: Int2}, {
-         Public: {
-         A: function () { },
-         B: function () { },
-         C: function () { }
-         }
-         });
-         }).toThrow();
-         expect(function () {
-         YYC.Class({Interface: Int2}, {
-         Public: {
-         B: function () { },
-         C: function () { },
-         a: 1
-         }
-         });
-         }).toThrow();
-         });
-         it("子类全部实现了接口方法和属性，不抛出异常", function () {
-         var Int = YYC.Interface("A", "B");
-
-         expect(function () {
-         YYC.Class({ Interface: Int }, {
-         Public: {
-         A: function () { },
-         B: function () { }
-         }
-         });
-         }).not.toThrow();
-         });
-         */
+            expect(function () {
+                YYC.Class({ Interface: Int }, {
+                    Public: {
+                        A: function () { },
+                        B: function () { }
+                    }
+                });
+            }).not.toThrow();
+        });
     });
 
     describe("解决发现的问题", function () {
